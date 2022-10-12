@@ -12,10 +12,21 @@ FIELDS_LIST = [
 ]
 
 
-def upload_position(
+def update_position_db(field_uuid: str, new_pos: int) -> int:
+    """Updates position in db"""
+    for field in FIELDS_LIST:
+        if field.get("uuid") == field_uuid:
+            current_pos = field.get("sort")
+            field[field_uuid] = new_pos
+
+    return current_pos
+
+
+def update_position(
     field_uuid: str, new_pos: int, fields_list: list[dict[str, Any]]
 ) -> Union[dict, str]:
-    """Uploads the position of a field"""
+    """Update the position of a field"""
+    update_position_db(field_uuid, new_pos)
     fields_dict: dict[str, dict] = {field["uuid"]: field for field in fields_list}
     current_pos: int = fields_dict[field_uuid]["sort"]
 
@@ -39,5 +50,5 @@ def sort_list(fields_list: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return sorted(fields_list, key=lambda x: x["sort"])
 
 
-pprint(upload_position("uuid5", 1, sort_list(FIELDS_LIST)), sort_dicts=False)
-pprint(upload_position("uuid1", 5, sort_list(FIELDS_LIST)), sort_dicts=False)
+pprint(update_position("uuid5", 1, sort_list(FIELDS_LIST)), sort_dicts=False)
+pprint(update_position("uuid1", 5, sort_list(FIELDS_LIST)), sort_dicts=False)
